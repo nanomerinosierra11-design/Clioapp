@@ -1,0 +1,33 @@
+CLIOGUIDE · LÍNEA DEL TIEMPO DE LA HISTORIA UNIVERSAL
+2,108 personajes con índice, mapa interactivo, línea del tiempo y fichas extensas
+(versión del 19 de octubre de 2026)
+
+CÓMO ABRIRLO
+1. En la computadora: doble clic en index.html. Funciona sin internet
+   (mapa, tipografías y librerías van incluidos en la carpeta lib/).
+2. En iPhone o iPad: copia ClioGuide_portatil.html a la app Archivos
+   (o envíatelo por AirDrop/correo) y ábrelo; es un solo archivo autónomo
+   con todas las fichas y miniaturas. En Safari puedes usar
+   Compartir › Añadir a pantalla de inicio.
+3. En GitHub Pages: sube la carpeta tal cual; index.html es la portada.
+
+QUÉ HAY
+index.html                 la guía (Índice · Atlas y línea del tiempo · Fichas)
+ClioGuide_portatil.html    versión de un solo archivo para iPhone/sin conexión
+datos/personajes.js        fichas básicas (fechas, lugar, coordenadas, hitos)
+datos/fichas_extensas.js   biografía de varios párrafos, contexto histórico,
+                           hitos, obras y acciones clave, legado, dato curioso
+                           y lecturas recomendadas
+datos/*.json               los mismos datos en JSON, para editar o reutilizar
+lib/                       tipografías, d3, contornos del mundo
+miniaturas/                miniaturas JPG de 360 px de cada retrato
+NNNN-nombre.png            retratos originales (el número es el folio)
+
+NAVEGACIÓN
+· Índice: alfabético, cronológico o por folio; vista de lista o de láminas;
+  búsqueda por nombre, lugar o civilización; filtros por época, oficio y región.
+· Atlas: mueve el año con la regla, pulsa ▶ para recorrer la historia; el mapa
+  muestra quién vivía en ese momento y la línea del tiempo los agrupa por región.
+· Ficha: «Capitula» lleva a cada apartado; «Ver su tiempo en el Atlas» sitúa
+  al personaje en el mapa y la línea; abajo, relacionados y contemporáneos.
+· Los enlaces antiguos (#/p/slug de la versión v7) se redirigen solos.
