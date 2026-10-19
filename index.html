@@ -1231,7 +1231,7 @@ $("letras").addEventListener("click",e=>{ const a=e.target.closest("a"); if(!a) 
     const t=$("letras"); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); });
   const clio=BY["clio-musa-de-la-historia"], im=$("imgClio");
   im.onerror=()=>{ im.onerror=null; if(clio) im.src=miniSrc(clio); else { $("incipit").querySelector(".musa").remove(); $("incipit").style.gridTemplateColumns="1fr"; } };
-  im.src=(window.IMG&&window.IMG.__clio)||"clio-the-greek-muse-of-history-unknown-time.png";
+  im.src=clio ? miniSrc(clio) : ((window.IMG&&window.IMG.__clio)||"clio-the-greek-muse-of-history-unknown-time.png");
   if(!clio) $("incipit").querySelector(".musa").removeAttribute("href");
   document.querySelectorAll(".azar").forEach(b=>b.addEventListener("click",()=>{ const p=P[Math.floor(Math.random()*P.length)]; location.hash="#/p/"+p.slug; }));
 })();
