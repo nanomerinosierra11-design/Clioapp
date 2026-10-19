@@ -1,6 +1,6 @@
 CLIOGUIDE · LÍNEA DEL TIEMPO DE LA HISTORIA UNIVERSAL
-2,108 personajes con índice, mapa interactivo, línea del tiempo y fichas extensas
-(versión del 19 de octubre de 2026)
+2,114 personajes con índice, mapa interactivo, línea del tiempo y fichas extensas
+(versión del 19 de octubre de 2026, rev. 2)
 
 CÓMO ABRIRLO
 1. En la computadora: doble clic en index.html. Funciona sin internet
@@ -20,8 +20,8 @@ datos/fichas_extensas.js   biografía de varios párrafos, contexto histórico,
                            y lecturas recomendadas
 datos/*.json               los mismos datos en JSON, para editar o reutilizar
 lib/                       tipografías, d3, contornos del mundo
-miniaturas/                miniaturas JPG de 360 px de cada retrato
-NNNN-nombre.png            retratos originales (el número es el folio)
+NNNN-nombre.jpg            retratos (el número es el folio)
+clio-the-greek-muse-…png   imagen de Clío para la portada del índice
 
 NAVEGACIÓN
 · Índice: alfabético, cronológico o por folio; vista de lista o de láminas;

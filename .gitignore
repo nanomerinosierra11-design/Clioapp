@@ -1,0 +1,8 @@
+# Retratos originales en alta resolución (5.8 GB): fuera de git
+*.png
+!clio-the-greek-muse-of-history-unknown-time.png
+catalogo-*/Personajes/
+# Copia duplicada de las miniaturas de la raíz
+catalogo-*/Miniaturas/
+.DS_Store
+*.zip
