@@ -633,6 +633,7 @@ function faCorto(y){ y=Math.round(y); return y<0 ? nf(y)+" a.C." : String(y); }
 const ROM=n=>{const v=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];let r="";for(const[a,s]of v)while(n>=a){r+=s;n-=a;}return r;};
 function siglo(y){
   y=Math.round(y);
+  if(y<=-1000000) return "hace unos "+((HOY-y)/1e6).toLocaleString("es-MX",{maximumFractionDigits:1})+" millones de años";
   if(y<-10000) return "hace unos "+nf(Math.round((HOY-y)/1000))+" mil años";
   if(y<0){ const s=Math.ceil(-y/100); return (s>40? "milenio "+ROM(Math.ceil(-y/1000))+" a.C." : "siglo "+ROM(s)+" a.C."); }
   return "siglo "+ROM(Math.max(1,Math.ceil(y/100)));
@@ -674,7 +675,7 @@ let FILTRADOS=P.slice(), VISIBLES=[];
 const K=3000, M=420;
 const T = y => y>=-K ? y : -K - M*Math.log2(-y/K);
 const Ti = t => t>=-K ? t : -K*Math.pow(2,(-K-t)/M);
-const TMIN = T(-420000), TMAX = T(HOY+14);
+const TMIN = T(-3500000), TMAX = T(HOY+14);
 
 /* =========================================================
    LÍNEA DEL TIEMPO (canvas)
@@ -731,7 +732,7 @@ function _pintarTL(){
   tl.hits=[];
   // franjas de época
   ERAS.forEach((e,i)=>{
-    const x0=Math.max(0,xDeA(Math.max(e.a,-420000))), x1=Math.min(W,xDeA(Math.min(e.b,HOY+14)));
+    const x0=Math.max(0,xDeA(Math.max(e.a,-3500000))), x1=Math.min(W,xDeA(Math.min(e.b,HOY+14)));
     if(x1<=x0) return;
     c.fillStyle= i%2? "rgba(185,138,44,.10)" : "rgba(255,250,235,.25)";
     c.fillRect(x0,0,x1-x0,H);
@@ -747,7 +748,7 @@ function _pintarTL(){
   c.beginPath(); c.moveTo(0,HDR-.5); c.lineTo(W,HDR-.5); c.stroke();
   const ticks=[];
   const yA=Ti(tl.t0), yB=Ti(tl.t1);
-  const prehist=[-400000,-200000,-100000,-60000,-40000,-20000,-10000,-6000,-4000];
+  const prehist=[-3000000,-2000000,-1000000,-400000,-200000,-100000,-60000,-40000,-20000,-10000,-6000,-4000];
   prehist.forEach(y=>{ if(y>=yA && y<=yB) ticks.push(y); });
   if(yB>-K){
     const st=pasoTicks(); let y=Math.ceil(Math.max(yA,-K)/st)*st;
@@ -759,7 +760,7 @@ function _pintarTL(){
     const x=xDeA(y); if(x<-40||x>W+40) return;
     c.strokeStyle="rgba(92,64,28,.55)"; c.beginPath(); c.moveTo(x+.5,HDR-8); c.lineTo(x+.5,HDR); c.stroke();
     c.strokeStyle="rgba(92,64,28,.10)"; c.beginPath(); c.moveTo(x+.5,HDR); c.lineTo(x+.5,H); c.stroke();
-    const lab= y<=-10000 ? nf(y/1000)+" mil a.C." : (y<0? nf(y)+" a.C." : (y===0?"1 d.C.":String(y)));
+    const lab= y<=-1000000 ? nf(y/1000000)+" mill. a.C." : y<=-10000 ? nf(y/1000)+" mil a.C." : (y<0? nf(y)+" a.C." : (y===0?"1 d.C.":String(y)));
     const tw=c.measureText(lab).width;
     if(x-tw/2>ultX+10){ c.fillText(lab,x-tw/2,HDR-12); ultX=x+tw/2; }
   });
@@ -1089,7 +1090,7 @@ function aplicarFiltros(){
 function calcVisibles(){ VISIBLES=FILTRADOS.filter(p=>enMomento(p,S.anio)); }
 let tFin=0;
 function ponerAnio(y,{desde}={}){
-  y=Math.round(Math.max(-420000,Math.min(HOY,y)));
+  y=Math.round(Math.max(-3500000,Math.min(HOY,y)));
   if(y===0) y=1;
   S.anio=y;
   $("anio").textContent=fa(y);

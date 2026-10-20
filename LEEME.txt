@@ -1,6 +1,6 @@
 CLIOGUIDE · LÍNEA DEL TIEMPO DE LA HISTORIA UNIVERSAL
-2,114 personajes con índice, mapa interactivo, línea del tiempo y fichas extensas
-(versión del 19 de octubre de 2026, rev. 2)
+2,212 personajes con índice, mapa interactivo, línea del tiempo y fichas extensas
+(versión del 19 de octubre de 2026, rev. 3, 20 oct 2026)
 
 CÓMO ABRIRLO
 1. En la computadora: doble clic en index.html. Funciona sin internet
