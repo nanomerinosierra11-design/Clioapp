@@ -6,3 +6,4 @@ catalogo-*/Personajes/
 catalogo-*/Miniaturas/
 .DS_Store
 *.zip
+!clio_icono_*.png
