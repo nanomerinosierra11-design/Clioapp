@@ -414,6 +414,19 @@ input[type=range]{accent-color:var(--rubrica)}
   .barra-movil,nav.pestanas,.acciones,.migas,.capitula,.chips-cap{display:none!important}
   body{background:#fff}.marco{box-shadow:none}
 }
+
+/* ---------- visor de retrato (zoom) ---------- */
+.zoom-btn{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative}
+.zoom-ic{position:absolute;right:8px;bottom:8px;width:34px;height:34px;display:grid;place-items:center;font-size:18px;color:var(--oro2);background:rgba(29,58,120,.88);border:1px solid var(--oro);border-radius:2px;pointer-events:none}
+.visor{position:fixed;inset:0;z-index:200;background:rgba(22,13,6,.985);display:flex;flex-direction:column;touch-action:none;-webkit-user-select:none;user-select:none}
+.visor.oculto{display:none}
+.visor-barra{display:flex;align-items:center;gap:8px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));color:#f3e3bd;font-family:var(--sc);letter-spacing:.05em;font-size:15px}
+.visor-barra .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.visor-barra button{min-width:44px;min-height:44px;font-size:20px;color:#f3e3bd;background:rgba(255,255,255,.08);border:1px solid rgba(226,191,104,.5);cursor:pointer;font-family:var(--texto)}
+.visor-lienzo{flex:1;position:relative;overflow:hidden;cursor:grab}
+.visor-lienzo:active{cursor:grabbing}
+.visor-lienzo img{position:absolute;left:50%;top:50%;max-width:none;transform-origin:0 0;will-change:transform;box-shadow:0 0 0 1px rgba(226,191,104,.5),0 10px 40px rgba(0,0,0,.6)}
+.visor-nota{text-align:center;color:#cdb98d;font-style:italic;font-size:14px;padding:6px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
 </style>
 </head>
 <body>
@@ -555,6 +568,12 @@ input[type=range]{accent-color:var(--rubrica)}
   <span class="esq-inf"><span>✠</span><span>✠</span></span>
 </div>
 
+<div class="visor oculto" id="visor" role="dialog" aria-modal="true" aria-label="Retrato a tamaño completo">
+  <div class="visor-barra"><span class="t" id="visorT"></span>
+    <button type="button" id="vz-" title="Alejar">−</button><button type="button" id="vz0" title="Ajustar a la pantalla">◯</button><button type="button" id="vz+" title="Acercar">+</button><button type="button" id="vzX" title="Cerrar">✕</button></div>
+  <div class="visor-lienzo" id="visorL"><img id="visorI" alt=""></div>
+  <p class="visor-nota" id="visorN">Pellizca o usa la rueda para acercar · arrastra para mover · doble toque para ampliar</p>
+</div>
 <div class="tip oculto" id="tip"></div>
 <nav class="barra-movil" aria-label="Navegación">
   <a href="#/indice" data-v="indice"><span class="ic">❦</span>Índice</a>
@@ -1271,8 +1290,8 @@ function pintarFicha(slug){
     <span class="sp"></span><a href="#/p/${ant.slug}">‹ ${esc(ant.nombre)}</a> · <a href="#/p/${sig.slug}">${esc(sig.nombre)} ›</a></div>
   <article class="ficha">
     <div class="retrato">
-      <div class="im"><a href="${origSrc(p)}" target="_blank" rel="noopener" title="Abrir el retrato en alta resolución">
-        <img src="${origSrc(p)}" alt="Retrato de ${esc(p.nombre)}" onerror="this.onerror=null;this.src='${miniSrc(p)}'"></a></div>
+      <div class="im"><button type="button" class="zoom-btn" data-zoom title="Ver el retrato a tamaño completo">
+        <img src="${origSrc(p)}" alt="Retrato de ${esc(p.nombre)}" onerror="this.onerror=null;this.src='${miniSrc(p)}'"><span class="zoom-ic" aria-hidden="true">⤢</span></button></div>
       ${p.num?`<div class="folio">Folio ${ROM(p.num)}</div>`:""}
       <p class="pie">${esc(tipoTxt)} · ${esc(p.civilizacion)}</p>
       <nav class="capitula" aria-label="Capítulos de la ficha"><span class="k">Capitula</span>${capHTML}</nav>
@@ -1302,7 +1321,7 @@ function pintarFicha(slug){
       ${X.lecturas&&X.lecturas.length?`<h3 class="rubro" id="c-lect">Lecturas recomendadas</h3><ul class="lect">${X.lecturas.map(l=>`<li>${esc(l.autor)}, <i>${esc(l.titulo)}</i></li>`).join("")}</ul>`:""}
       <div class="acciones">
         <button class="b oro" id="fAtlas">✠ Ver su tiempo en el Atlas</button>
-        <a class="b" href="${origSrc(p)}" target="_blank" rel="noopener">Retrato original</a>
+        <button class="b" data-zoom>⤢ Retrato a tamaño completo</button>
         <button class="b azar">Otro folio al azar</button>
       </div>
       <h3 class="rubro" id="c-tiempo">Su tiempo histórico</h3>
@@ -1320,6 +1339,7 @@ function pintarFicha(slug){
   v.querySelector("[data-letra]").onclick=e=>{ e.preventDefault(); I.orden="az"; $("iOrden").value="az"; location.hash="#/indice"; setTimeout(()=>{pintarIndice(); const t=document.getElementById("L-"+p.letra); if(t) t.scrollIntoView();},60); };
   v.querySelectorAll(".capitula a,.chips-cap a").forEach(a=>a.onclick=e=>{ e.preventDefault(); const t=$("c-"+a.dataset.c); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); });
   v.querySelectorAll(".azar").forEach(b=>b.onclick=()=>{ const q=P[Math.floor(Math.random()*P.length)]; location.hash="#/p/"+q.slug; });
+  v.querySelectorAll("[data-zoom]").forEach(b=>b.onclick=()=>abrirZoom(p));
   document.title=p.nombre+" · ClioGuide";
   miniLinea(p,con.slice(0,10));
   miniMapa(p,con);
@@ -1413,6 +1433,48 @@ $("bmBuscar").onclick=()=>{
 if(window.matchMedia("(min-width:821px)").matches) $("filtros").open=true;
 $("subtitulo").textContent=`${P.length.toLocaleString("es-MX")} personajes · mapa, línea del tiempo y fichas · de la prehistoria a nuestros días`;
 ruta();
+
+/* =========================================================
+   VISOR DE RETRATO A TAMAÑO COMPLETO
+   ========================================================= */
+const ZV={s:1,x:0,y:0,base:1,ptr:new Map(),d0:0,s0:1,cx:0,cy:0,ult:0,p:null};
+const HD_BINS={};
+function hdSrc(p){
+  const e=window.HD_INDICE&&window.HD_INDICE[p.slug];
+  if(!e) return Promise.resolve(window.IMG? null : origSrc(p));
+  const [n,off,len]=e, url="hd/hd_"+String(n).padStart(3,"0")+".avif";
+  HD_BINS[url]=HD_BINS[url]||fetch(url).then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); });
+  return HD_BINS[url].then(buf=>URL.createObjectURL(new Blob([buf.slice(off,off+len)],{type:"image/avif"}))).catch(()=>{ delete HD_BINS[url]; return null; });
+}
+function zAplicar(){ $("visorI").style.transform=`translate(${ZV.x}px,${ZV.y}px) scale(${ZV.s})`; }
+function zAjustar(){ const L=$("visorL"), im=$("visorI"); const w=im.naturalWidth||300, h=im.naturalHeight||450;
+  ZV.base=Math.min(L.clientWidth/w, L.clientHeight/h)*0.96; ZV.s=ZV.base; ZV.x=-w*ZV.s/2; ZV.y=-h*ZV.s/2; zAplicar(); }
+function zEscalar(f,cx,cy){ const L=$("visorL").getBoundingClientRect(); if(cx==null){cx=L.width/2;cy=L.height/2;}
+  const px=cx-L.width/2, py=cy-L.height/2; const ns=Math.max(ZV.base*0.8,Math.min(ZV.base*8,ZV.s*f)); const k=ns/ZV.s;
+  ZV.x=px-(px-ZV.x)*k; ZV.y=py-(py-ZV.y)*k; ZV.s=ns; zAplicar(); }
+function abrirZoom(p){ ZV.p=p; const im=$("visorI"); $("visorT").textContent=p.nombre+(p.num?" · folio "+ROM(p.num):"");
+  $("visor").classList.remove("oculto"); document.body.style.overflow="hidden";
+  im.onload=zAjustar; im.src=origSrc(p); $("visorN").textContent="Cargando el retrato a tamaño completo…";
+  hdSrc(p).then(src=>{ if(ZV.p!==p) return; if(src&&src!==im.src){ const prev=im.src; im.onload=()=>{ zAjustar(); }; im.onerror=()=>{ im.onerror=null; im.src=prev; }; im.src=src; }
+    $("visorN").textContent="Pellizca o usa la rueda para acercar · arrastra para mover · doble toque para ampliar"; });
+  setTimeout(()=>$("vzX").focus(),30); }
+function cerrarZoom(){ $("visor").classList.add("oculto"); document.body.style.overflow=""; ZV.p=null; }
+$("vzX").onclick=cerrarZoom; $("vz+").onclick=()=>zEscalar(1.5); $("vz-").onclick=()=>zEscalar(1/1.5); $("vz0").onclick=zAjustar;
+document.addEventListener("keydown",e=>{ if($("visor").classList.contains("oculto")) return;
+  if(e.key==="Escape") cerrarZoom(); else if(e.key==="+"||e.key==="=") zEscalar(1.4); else if(e.key==="-") zEscalar(1/1.4); });
+window.addEventListener("resize",()=>{ if(!$("visor").classList.contains("oculto")) zAjustar(); });
+(function(){ const L=$("visorL");
+  L.addEventListener("wheel",e=>{ e.preventDefault(); const r=L.getBoundingClientRect(); zEscalar(Math.exp(-e.deltaY*0.0018),e.clientX-r.left,e.clientY-r.top); },{passive:false});
+  L.addEventListener("pointerdown",e=>{ L.setPointerCapture(e.pointerId); ZV.ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(ZV.ptr.size===2){ const [a,b]=[...ZV.ptr.values()]; ZV.d0=Math.hypot(a.x-b.x,a.y-b.y); ZV.s0=ZV.s; }
+    const t=Date.now(); if(ZV.ptr.size===1&&t-ZV.ult<300){ const r=L.getBoundingClientRect(); if(ZV.s>ZV.base*1.2) zAjustar(); else zEscalar(2.5,e.clientX-r.left,e.clientY-r.top); ZV.ult=0; } else ZV.ult=t; });
+  L.addEventListener("pointermove",e=>{ if(!ZV.ptr.has(e.pointerId)) return; const prev=ZV.ptr.get(e.pointerId); ZV.ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(ZV.ptr.size===1){ ZV.x+=e.clientX-prev.x; ZV.y+=e.clientY-prev.y; zAplicar(); }
+    else if(ZV.ptr.size===2){ const [a,b]=[...ZV.ptr.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); const r=L.getBoundingClientRect();
+      zEscalar((ZV.s0*d/ZV.d0)/ZV.s,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top); } });
+  const fin=e=>{ ZV.ptr.delete(e.pointerId); if(ZV.ptr.size<2) ZV.d0=0; };
+  L.addEventListener("pointerup",fin); L.addEventListener("pointercancel",fin);
+})();
 </script>
 </body>
 </html>
